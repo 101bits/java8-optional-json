@@ -5,6 +5,9 @@ public class Address {
     private int zip;
     private String country;
 
+    public Address() {
+    }
+
     public Address(String street, String city, String state, int zip, String country) {
         this.street = street;
         this.city = city;
@@ -31,16 +34,5 @@ public class Address {
 
     public String getCountry() {
         return country;
-    }
-
-    @Override
-    public String toString() {
-        return "Address{" +
-                "street='" + street + '\'' +
-                ", city='" + city + '\'' +
-                ", state='" + state + '\'' +
-                ", zip=" + zip +
-                ", country='" + country + '\'' +
-                '}';
     }
 }

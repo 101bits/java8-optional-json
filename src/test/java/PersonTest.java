@@ -2,14 +2,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
+import java.io.File;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class PersonTest {
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
     final ObjectMapper objectMapper = registerJdkModuleAndGetMapper();
 
     @Test
@@ -40,9 +46,28 @@ public class PersonTest {
         assertEquals(address.getCountry(), jsonNode.get("address").get("country").asText());
     }
 
+    @Test
+    public void writeAndReadPersonAsJsonOnFile() throws Exception {
+        Address address = new Address("1 Infinite Loop", "Cupertino", "CA", 95014, "USA");
+        String phone = "1-800-My-Apple";
+        Person person = new Person("john", "doe", 21, Optional.of(address), Optional.of(phone));
+        ObjectMapper objectMapper = registerJdkModuleAndGetMapper();
+        File file = temporaryFolder.newFile("person.json");
+        objectMapper.writeValue(file, person);
+
+        assertTrue(file.exists());
+        assertTrue(file.length() > 0);
+
+        Person personFromFile = objectMapper.readValue(file, Person.class);
+        assertEquals(person, personFromFile);
+
+    }
+
     private ObjectMapper registerJdkModuleAndGetMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new Jdk8Module());
+        Jdk8Module module = new Jdk8Module();
+        module.configureAbsentsAsNulls(true);
+        objectMapper.registerModule(module);
         return objectMapper;
     }
 }

@@ -10,6 +10,9 @@ public class Person {
     private Optional<Address> address;
     private Optional<String> phone;
 
+    private Person() {
+    }
+
     public Person(String firstName, String lastName, int age) {
         this(firstName, lastName, age, Optional.empty(), Optional.empty());
     }
