@@ -1,24 +1,29 @@
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class Person {
-    private String firstName;
-    private String lastName;
-    private int age;
-    private Optional<Address> address;
-    private Optional<String> phone;
+    private final String firstName;
+    private final String lastName;
+    private final int age;
+    private final Optional<Address> address;
+    private final Optional<String> phone;
 
-    private Person() {
-    }
 
-    public Person(String firstName, String lastName, int age) {
+    public Person(final String firstName, final String lastName, final int age) {
         this(firstName, lastName, age, Optional.empty(), Optional.empty());
     }
 
-    public Person(String firstName, String lastName, int age,
-                  Optional<Address> address, Optional<String> phone) {
+    @JsonCreator
+    public Person(
+            @JsonProperty("firstName") String firstName,
+            @JsonProperty("lastName") String lastName,
+            @JsonProperty("age") int age,
+            @JsonProperty("address") Optional<Address> address,
+            @JsonProperty("phone") Optional<String> phone) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
@@ -56,5 +61,22 @@ public class Person {
     @JsonProperty("phone")
     private String getPhoneForJson() {
         return phone.orElse(null);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Person person = (Person) o;
+        return age == person.age &&
+                Objects.equals(firstName, person.firstName) &&
+                Objects.equals(lastName, person.lastName) &&
+                Objects.equals(address, person.address) &&
+                Objects.equals(phone, person.phone);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, age, address, phone);
     }
 }
