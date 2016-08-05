@@ -59,5 +59,4 @@ fabric.properties
 hs_err_pid*
 .idea/
 java8-optional-json.iml
-pom.xml
 target/
